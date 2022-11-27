@@ -1,8 +1,7 @@
  #include <bits/stdc++.h>
 using namespace std;
 
-struct PCB
-{
+struct PCB{
     int job_id;
     int TTL;
     int TLL;
@@ -31,22 +30,18 @@ fstream outFile;
 unordered_map<int, string> errors = {{0, "No Error"},{1, "Out of Data"},{2, "Line Limit Exceeded"},{3, "Time Limit Exceeded"},
                                      {4, "Operation Code Error"},{5, "Operand Error"},{6, "Invalid Page Fault"}};
 
-
 void init(){
-    for (int i = 0; i < 300; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
+    for (int i = 0; i < 300; i++){                  //clearing memory
+        for (int j = 0; j < 4; j++){
             M[i][j] = ' ';
         }
     }
 
-    for(int i=0;i<30;i++)
-    {
+    for(int i=0;i<30;i++){                          //clearing visited flags
         visited[i]=0;
     }
 
-    IR[4] = {'-'};
+    IR[4] = {'-'};                                  //clearing ir and r ,, em,ti,ot,va,ptr,ic to 0 ,,c false
     R[4] = {'-'};
     IC = 0;
     C = false;
@@ -57,29 +52,21 @@ void init(){
     EM = 0;
 }
 
-int ALLOCATE(){
+int ALLOCATE(){                     //returning a random value lower than 30
     return (rand() % 30);
 }
 
 int ADDRESSMAP(int va){
     int pte = ptr*10 + va / 10;
-
     string temp = "";
-
-    if (M[pte][0] == '*')
-    {
+    if (M[pte][0] == '*'){
         cout << "Page Fault" << endl;
         return -1;
-    }
-
-    else
-    {
-        for (int i = 0; i < 4; i++)
-        {
+    }else{
+        for (int i = 0; i < 4; i++){
             if(M[pte][i]!=' ')
                 temp += M[pte][i];
         }
-
         return ((stoi(temp) * 10) + (va % 10));
     }
 }
@@ -92,112 +79,77 @@ int TERMINATE(int Code){
 }
 
 void MOS(){
-    if (SI == 1)
-    {
+    if (SI == 1){
         string line;
         getline(inFile, line);
-
-        if(line[0]=='$' && line[1]=='E' && line[2]=='N' && line[3]=='D')
-        {
+        if(line[0]=='$' && line[1]=='E' && line[2]=='N' && line[3]=='D'){
             EM=1;
             TERMINATE(1);
             return;
         }
-
         int frame = ALLOCATE();
-        while (visited[frame] != 0)
-        {
+        while (visited[frame] != 0){
             frame = ALLOCATE();
         }
-
         visited[frame] = 1;
-
         int i = ptr;
         i = i*10;
         cout<<"\n\nPTR = "<<ptr<<endl;
-        while (M[i][0] != '*')
-        {
+        while (M[i][0] != '*'){
             i++;
         }
-
         int temp = frame / 10;
-
         M[i][0] = ' ';
         M[i][1] = ' ';
         M[i][2] = temp + 48;
         M[i][3] = frame % 10 + 48;
-
         int l = 0;
         frame = frame * 10;
-        for (int i = 0; i < line.length() && line.length() < 40; i++)
-        {
+        for (int i = 0; i < line.length() && line.length() < 40; i++){
             M[frame][l++] = line[i];
-            if (l == 4)
-            {
+            if (l == 4){
                 l = 0;
                 frame += 1;
             }
         }
-    }
-
-    else if (SI == 2)
-    {
+    }else if (SI == 2){
         P.TLC+=1;
-        if(P.TLC > P.TLL)
-        {
+        if(P.TLC > P.TLL){
             EM = 2;
             TERMINATE(2);
             return;
         }
-
         int add = IR[2] - 48;
         add = (add * 10);
-
         int ra = ADDRESSMAP(add);
-
-        if (ra != -1)
-        {
+        if (ra != -1){
             string out;
-
-            for (int i = 0; i < 10; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
+            for (int i = 0; i < 10; i++){
+                for (int j = 0; j < 4; j++){
                     out += M[ra][j];
                 }
                 ra += 1;
             }
-
             outFile << out << "\n";
-        }
-
-        else
-        {
+        }else{
             EM = 6;
             TERMINATE(6);
             PI=3;
         }
-    }
-
-    else if (SI == 3)
-    {
+    }else if (SI == 3){
         outFile<<"\nProgram Terminated successfully"<<"\n";
         outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL"<<P.TTL<<"\tTLL"<<P.TLL;
-        for(int i=0;i<3;i++)
-            {
+        for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
             }
     }
 }
 
 void EXECUTE(){
-    while (true)
-    {
-        if(PI!=0 || TI!=0 || EM!=0)
-        {
+    while (true){
+        if(PI!=0 || TI!=0 || EM!=0){
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL"<<P.TTL<<"\tTLL"<<P.TLL;
-            for(int i=0;i<3;i++)
-            {
+            for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
             }
             break;
@@ -205,23 +157,18 @@ void EXECUTE(){
 
         RA = ADDRESSMAP(IC);
 
-        if(M[RA][0]!='H' && (!isdigit(M[RA][2]) || !isdigit(M[RA][3])))
-        {
+        if(M[RA][0]!='H' && (!isdigit(M[RA][2]) || !isdigit(M[RA][3]))){
             EM = 5;
             TERMINATE(EM);
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
-            for(int i=0;i<3;i++)
-            {
+            for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
             }
         }
-
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++){
             IR[i] = M[RA][i];
         }
         IC++;
-
         int add = IR[2] - 48;
         add = (add * 10) + (IR[3] - 48);
 
@@ -230,173 +177,116 @@ void EXECUTE(){
         else
             P.TTC+=1;
 
-        if(P.TTC > P.TTL)
-        {
+        if(P.TTC > P.TTL){
             EM = 3;
             TI = 2;
             TERMINATE(EM);
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
-            for(int i=0;i<3;i++)
-            {
+            for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
             }
             break;
         }
 
-        if (IR[0] == 'L' && IR[1] == 'R')
-        {
+        if (IR[0] == 'L' && IR[1] == 'R'){
             int ra = ADDRESSMAP(add);
-            if(ra == -1)
-            {
+            if(ra == -1){
                 EM=6;
                 TERMINATE(6);
-            }
-            else
-            {
+            }else{
                 for (int i = 0; i < 4; i++)
                     R[i] = M[ra][i];
             }
-        }
-
-        else if (IR[0] == 'S' && IR[1] == 'R')
-        {
+        }else if (IR[0] == 'S' && IR[1] == 'R'){
             int ra = ADDRESSMAP(add);
-
-            if(ra!=-1)
-            {
+            if(ra!=-1){
                 for (int i = 0; i < 4; i++)
                     M[ra][i] = R[i];
-            }
-
-            else
-            {
+            }else{
                 int frame = ALLOCATE();
-                while (visited[frame] != 0)
-                {
+                while (visited[frame] != 0){
                     frame = ALLOCATE();
                 }
-
                 visited[frame] = 1;
-
                 int i = ptr;
                 i = i*10;
-                while (M[i][0] != '*')
-                {
+                while (M[i][0] != '*'){
                     i++;
                 }
-
                 int temp = frame / 10;
-
                 M[i][0] = ' ';
                 M[i][1] = ' ';
                 M[i][2] = temp + 48;
                 M[i][3] = frame % 10 + 48;
-
                 frame = frame * 10;
                 for (int i = 0; i < 4; i++)
                     M[frame][i] = R[i];
             }
-        }
-
-        else if (IR[0] == 'C' && IR[1] == 'R')
-        {
+        }else if (IR[0] == 'C' && IR[1] == 'R'){
             int flag = 0;
-
             int ra = ADDRESSMAP(add);
-
-            if(ra = -1)
-            {
+            if(ra = -1){
                 EM=6;
                 TERMINATE(6);
-            }
-
-            else
-            {
-                for (int i = 0; i < 4; i++)
-                {
+            }else{
+                for (int i = 0; i < 4; i++){
                     if (R[i] != M[ra][i])
                         flag = 1;
                 }
-
                 if (flag == 1)
                     C = false;
                 else
                     C = true;
             }
-        }
-
-        else if (IR[0] == 'B' && IR[1] == 'T')
-        {
+        }else if (IR[0] == 'B' && IR[1] == 'T'){
             if (C == true)
                 IC = add;
         }
-
-        else if (IR[0] == 'G' && IR[1] == 'D')
-        {
+        else if (IR[0] == 'G' && IR[1] == 'D'){
             SI = 1;
             MOS();
         }
-
-        else if (IR[0] == 'P' && IR[1] == 'D')
-        {
+        else if (IR[0] == 'P' && IR[1] == 'D'){
             SI = 2;
             MOS();
-        }
-
-        else if (IR[0] == 'H')
-        {
+        }else if (IR[0] == 'H'){
             SI = 3;
             MOS();
             break;
-        }
-
-        else
-        {
+        }else{
             EM = 4;
             TERMINATE(EM);
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
-            for(int i=0;i<3;i++)
-            {
+            for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i]<<"\n\n\n";
             }
             break;
         }
-
     }
 }
 
-void LOAD()
-{
+void LOAD(){
     cout<<"\nReading Data..."<<endl;
     int m = 0;
     string line;
-    while (getline(inFile, line))
-    {
+    while (getline(inFile, line)){
         string str = "";
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++){
             str += line[i];
         }
-
-        if (str == "$AMJ")
-        {
+        if (str == "$AMJ"){  // initializing all values
             init();
             ptr = ALLOCATE();
-            for (int i = ptr * 10; i < ptr * 10 + 10; i++)
-            {
-                for (int j = 0; j < 4; j++)
-                {
+            for (int i = ptr * 10; i < ptr * 10 + 10; i++){         //memory to ****
+                for (int j = 0; j < 4; j++){
                     M[i][j] = '*';
                 }
             }
             visited[ptr] = 1;
-
-            //Initialize PCB
             string jobid_str = "";
             string TTL_str = "";
             string TLL_str = "";
-            for (int i = 0; i < 4; i++)
-            {
+            for (int i = 0; i < 4; i++){              //adding first job p where from 4-7 jid ,8-11 ttl and 12-15 tll
                 jobid_str += line[i + 4];
                 TTL_str += line[i + 8];
                 TLL_str += line[i + 12];
@@ -407,94 +297,64 @@ void LOAD()
             P.TLC = 0;
             P.TTC = 0;
         }
-
-        else if (str == "$DTA")
-        {
+        else if (str == "$DTA"){
             EXECUTE();
-
-        }
-
-         else if (str == "$END")
-        {
-            for(int i = 0; i<150; i++)
-            {
-                cout<<"M["<<i<<"]\t";
-                for(int j = 0; j<4; j++ )
-                {
+        }else if (str == "$END"){ //at end print whole memory block
+            for(int i = 0; i<100; i++){
+                cout<<"\tM["<<i<<"]\t";
+                for(int j = 0; j<4; j++ ){
                     cout<<M[i][j];
                 }
-                cout<<"\t\tM["<<i+150<<"]\t";
-                for(int j = 0; j<4; j++ )
-                {
-                    cout<<M[i+150][j];
+                cout<<"\t\tM["<<i+100<<"]\t";
+                for(int j = 0; j<4; j++ ){
+                    cout<<M[i+100][j];
                 }
-
+                cout<<"\t\tM["<<i+200<<"]\t";
+                for(int j = 0; j<4; j++ ){
+                    cout<<M[i+200][j];
+                }
                 cout<<endl;
             }
             cout << "\n**************Halt**************\n\n" <<endl;
-
-        }
-
-        else
-        {
+        }else{
             int frameNo = ALLOCATE();
-            while (visited[frameNo] != 0)
-            {
+            while (visited[frameNo] != 0){
                 frameNo = ALLOCATE();
             }
-
             visited[frameNo] = 1;
-
             int i = ptr;
-            while (M[i][0] != '*')
-            {
+            while (M[i][0] != '*'){
                 i++;
             }
-
             int temp = frameNo / 10;
-
             M[i][0] = ' ';
             M[i][1] = ' ';
             M[i][2] = temp + 48;
             M[i][3] = frameNo % 10 + 48;
-
             int len = 0;
-            for (int i = frameNo * 10; i < frameNo * 10 + 10 && len < line.length(); i++)
-            {
-                for (int j = 0; j < 4 && len < line.length(); j++)
-                {
-                    if (line[len] == 'H')
-                    {
+            for (int i = frameNo * 10; i < frameNo * 10 + 10 && len < line.length(); i++){
+                for (int j = 0; j < 4 && len < line.length(); j++){
+                    if (line[len] == 'H'){
                         M[i][j] = line[len++];
                         break;
-                    }
-
-                    else
-                    {
+                    }else{
                         M[i][j] = line[len++];
                     }
                 }
             }
-
             line.clear();
         }
-}
-
+    }
 }
 
 int main(){
     inFile.open("input2.txt", ios::in);
     outFile.open("Output2.txt", ios::out);
-
-    if (!inFile)
-    {
+    if (!inFile){
         cout << "The file is not present!" << endl;
-    }
-    else
-    {
+    }else{
         cout << "File opened successfully!" << endl;
     }
-
     LOAD();
     return 0;
 }
