@@ -141,7 +141,7 @@ void Load(){
                 for(int j = 0; j<4; j++ ){
                     cout<<Memory[i][j];
                 }
-                cout<<"\tM["<<i<<"]\t";
+                cout<<"\tM["<<i+50<<"]\t";
                 for(int j = 0; j<4; j++ ){
                     cout<<Memory[i+50][j];
                 }cout<<"\n";
