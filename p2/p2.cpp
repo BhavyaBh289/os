@@ -313,7 +313,7 @@ void LOAD(){
                 }
                 cout<<endl;
             }
-            cout << "\n**************Halt**************\n\n" <<endl;
+            cout << "\n\t\t\t\tHalt\t\t\t\t\n\n" <<endl;
         }else{
             int frameNo = ALLOCATE();
             while (visited[frameNo] != 0){
