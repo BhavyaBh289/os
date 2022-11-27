@@ -55,11 +55,11 @@ int ALLOCATE(){                     //returning a random value lower than 30
     return (rand() % 30);
 }
 
-int ADDRESSMAP(int va){
+int ADDRESSMAP(int va){                 ///error 6
     int pte = ptr*10 + va / 10; // page table entry ,register  virtual address
     string temp = "";
     if (M[pte][0] == '*'){
-        cout << "Page Fault" << endl;
+        cout << "Page Fault" << endl;               //page  fault 66
         return -1;
     }else{
         for (int i = 0; i < 4; i++){
@@ -76,13 +76,13 @@ int terminate(int Code){                    // print in file cause of terminatio
     outFile<<errors[Code]<<"\n\n";
 }
 
-void MOS(){
+void MOS(){                                         //errors 1,2
     if (SI == 1){
         string line;
         getline(inFile, line);
         if(line[0]=='$' && line[1]=='E' && line[2]=='N' && line[3]=='D'){       //$end
             EM=1;
-            terminate(1);
+            terminate(1);                                   //11 error due to end when  data is asked
             return;
         }
         int frame = ALLOCATE();
@@ -114,7 +114,7 @@ void MOS(){
         proc.TLC+=1;               //increase line counter
         if(proc.TLC > proc.TLL){
             EM = 2;
-            terminate(2);
+            terminate(2);                   //line limit 22 as counter greater than limit
             return;
         }
         int add = IR[2] - 48;
@@ -131,7 +131,7 @@ void MOS(){
             outFile << out << "\n";
         }else{
             EM = 6;
-            terminate(6);
+            terminate(6);                   //invalid catche found
             PI=3;
         }
     }else if (SI == 3){
@@ -143,7 +143,7 @@ void MOS(){
     }
 }
 
-void EXECUTE(){
+void EXECUTE(){                                     //errors 5,3,4
     while (true){
         if(PI!=0 || TI!=0 || EM!=0){
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL"<<proc.TTL<<"\tTLL"<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
@@ -157,7 +157,7 @@ void EXECUTE(){
 
         if(M[RA][0]!='H' && (!isdigit(M[RA][2]) || !isdigit(M[RA][3]))){
             EM = 5;
-            terminate(5);
+            terminate(5);                   //if h is not present  and the next two char are not numbers then it is terminated  for Operand error 55
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL: "<<proc.TTL<<"\tTLL: "<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
@@ -178,7 +178,7 @@ void EXECUTE(){
         if(proc.TTC > proc.TTL){
             EM = 3;
             TI = 2;
-            terminate(3);
+            terminate(3);                                                   //time limit Exceeded 33
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL: "<<proc.TTL<<"\tTLL: "<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
@@ -190,7 +190,7 @@ void EXECUTE(){
             int ra = ADDRESSMAP(add);
             if(ra == -1){
                 EM=6;
-                terminate(6);
+                terminate(6);                                       //invalid catche found
             }else{
                 for (int i = 0; i < 4; i++)
                     R[i] = M[ra][i];
@@ -225,7 +225,7 @@ void EXECUTE(){
             int ra = ADDRESSMAP(add);
             if(ra = -1){
                 EM=6;
-                terminate(6);
+                terminate(6);                                       //invalid catche found
             }else{
                 for (int i = 0; i < 4; i++){
                     if (R[i] != M[ra][i])
@@ -253,7 +253,7 @@ void EXECUTE(){
             break;
         }else{
             EM = 4;
-            terminate(4);
+            terminate(4);                                           //Operation code error  if command is not included  44
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL: "<<proc.TTL<<"\tTLL: "<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i]<<"\n\n\n";
