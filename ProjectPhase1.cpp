@@ -2,12 +2,6 @@
 
 using namespace std;
 
-    void init();
-    void Load();
-    void ExecuteUserProgram();
-    void mos();
-
-
     char IR[4];
     char R[4];
     int  IC,SI;
@@ -15,28 +9,12 @@ using namespace std;
     char Memory[100][4];
     fstream inFile;
     fstream outFile;
-    
-    
-int main(){
-    inFile.open("inputt.txt", ios::in);
-    outFile.open("Output.txt", ios::out);
-    if (!inFile){
-        cout << "File Doesn't Exist '" << endl;
-    }
-    else{
-        cout << "File Exist" << endl;
-    }
-    Load();
-    return 0;
-}
-
 void init(){
     for (int i = 0; i < 100; i++){
         for (int j = 0; j < 4; j++){
             Memory[i][j] = ' ';
         }
     }
-
     IR[4] = {'-'};
     R[4] = {'-'};
     IC = 0;
@@ -189,4 +167,17 @@ void Load(){
             }
         }
     }
+}
+
+int main(){
+    inFile.open("inputt.txt", ios::in);
+    outFile.open("Output.txt", ios::out);
+    if (!inFile){
+        cout << "File Doesn't Exist '" << endl;
+    }
+    else{
+        cout << "File Exist" << endl;
+    }
+    Load();
+    return 0;
 }
