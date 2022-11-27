@@ -9,7 +9,7 @@ struct PCB{
     int TLC ;               //total line counter
 };
 
-struct PCB P;
+struct PCB proc;
 
 int ptr;                        //page table register
 int visited[30];                //virtual group of 10
@@ -80,7 +80,7 @@ void MOS(){
     if (SI == 1){
         string line;
         getline(inFile, line);
-        if(line[0]=='$' && line[1]=='E' && line[2]=='N' && line[3]=='D'){
+        if(line[0]=='$' && line[1]=='E' && line[2]=='N' && line[3]=='D'){       //$end
             EM=1;
             terminate(1);
             return;
@@ -111,8 +111,8 @@ void MOS(){
             }
         }
     }else if (SI == 2){
-        P.TLC+=1;
-        if(P.TLC > P.TLL){
+        proc.TLC+=1;               //increase line counter
+        if(proc.TLC > proc.TLL){
             EM = 2;
             terminate(2);
             return;
@@ -136,7 +136,7 @@ void MOS(){
         }
     }else if (SI == 3){
         outFile<<"\nProgram terminated successfully"<<"\n";
-        outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL"<<P.TTL<<"\tTLL"<<P.TLL;
+        outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL"<<proc.TTL<<"\tTLL"<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
         for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
             }
@@ -146,7 +146,7 @@ void MOS(){
 void EXECUTE(){
     while (true){
         if(PI!=0 || TI!=0 || EM!=0){
-            outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL"<<P.TTL<<"\tTLL"<<P.TLL;
+            outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL"<<proc.TTL<<"\tTLL"<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
             }
@@ -158,7 +158,7 @@ void EXECUTE(){
         if(M[RA][0]!='H' && (!isdigit(M[RA][2]) || !isdigit(M[RA][3]))){
             EM = 5;
             terminate(5);
-            outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
+            outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL: "<<proc.TTL<<"\tTLL: "<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
             }
@@ -170,23 +170,23 @@ void EXECUTE(){
         int add = IR[2] - 48;
         add = (add * 10) + (IR[3] - 48);
 
-        if((IR[0]=='G' && IR[1]=='D') || (IR[0]=='S' && IR[1]=='R'))
-            P.TTC+=2;
+        if((IR[0]=='G' && IR[1]=='D') || (IR[0]=='S' && IR[1]=='R'))            //increase time counter 2 for gd and sr
+            proc.TTC+=2;
         else
-            P.TTC+=1;
+            proc.TTC+=1;
 
-        if(P.TTC > P.TTL){
+        if(proc.TTC > proc.TTL){
             EM = 3;
             TI = 2;
             terminate(3);
-            outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
+            outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL: "<<proc.TTL<<"\tTLL: "<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
             }
             break;
         }
 
-        if (IR[0] == 'L' && IR[1] == 'R'){
+        if (IR[0] == 'L' && IR[1] == 'R'){              //lr  load register
             int ra = ADDRESSMAP(add);
             if(ra == -1){
                 EM=6;
@@ -195,7 +195,7 @@ void EXECUTE(){
                 for (int i = 0; i < 4; i++)
                     R[i] = M[ra][i];
             }
-        }else if (IR[0] == 'S' && IR[1] == 'R'){
+        }else if (IR[0] == 'S' && IR[1] == 'R'){            //sr sys reg
             int ra = ADDRESSMAP(add);
             if(ra!=-1){
                 for (int i = 0; i < 4; i++)
@@ -220,7 +220,7 @@ void EXECUTE(){
                 for (int i = 0; i < 4; i++)
                     M[frame][i] = R[i];
             }
-        }else if (IR[0] == 'C' && IR[1] == 'R'){
+        }else if (IR[0] == 'C' && IR[1] == 'R'){                    //cr
             int flag = 0;
             int ra = ADDRESSMAP(add);
             if(ra = -1){
@@ -236,25 +236,25 @@ void EXECUTE(){
                 else
                     C = true;
             }
-        }else if (IR[0] == 'B' && IR[1] == 'T'){
+        }else if (IR[0] == 'B' && IR[1] == 'T'){                    //bt
             if (C == true)
                 IC = add;
         }
-        else if (IR[0] == 'G' && IR[1] == 'D'){
+        else if (IR[0] == 'G' && IR[1] == 'D'){                     //gd get from data
             SI = 1;
             MOS();
         }
-        else if (IR[0] == 'P' && IR[1] == 'D'){
+        else if (IR[0] == 'P' && IR[1] == 'D'){                     //pd put data to file
             SI = 2;
             MOS();
-        }else if (IR[0] == 'H'){
+        }else if (IR[0] == 'H'){                                    // h halt
             SI = 3;
             MOS();
             break;
         }else{
             EM = 4;
             terminate(4);
-            outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
+            outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<proc.TLC<<"\tTTC: "<<proc.TTC<<"\tTTL: "<<proc.TTL<<"\tTLL: "<<proc.TLL<<"\tJobId: "<<proc.job_id<<"\n";
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i]<<"\n\n\n";
             }
@@ -289,11 +289,11 @@ void LOAD(){
                 TTL_str += line[i + 8];
                 TLL_str += line[i + 12];
             }
-            P.job_id = stoi(jobid_str);
-            P.TTL = stoi(TTL_str);
-            P.TLL = stoi(TLL_str);
-            P.TLC = 0;
-            P.TTC = 0;
+            proc.job_id = stoi(jobid_str);
+            proc.TTL = stoi(TTL_str);
+            proc.TLL = stoi(TLL_str);
+            proc.TLC = 0;
+            proc.TTC = 0;
         }
         else if (str == "$DTA"){
             EXECUTE();

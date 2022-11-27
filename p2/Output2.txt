@@ -1,6 +1,6 @@
 HELLO-WORLD                            
 
-Program Terminated successfully
+Program terminated successfully
 IC = 3	Toggle: 0	TLC: 1	TTC: 4	TTL5	TLL2	H	 	 
 Program Terminated abnormally
 Invalid Page Fault
