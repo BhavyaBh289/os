@@ -17,31 +17,22 @@ using namespace std;
     fstream outFile;
     
     
-int main()
-{
-    
+int main(){
     inFile.open("inputt.txt", ios::in);
     outFile.open("Output.txt", ios::out);
-
-    if (!inFile)
-    {
+    if (!inFile){
         cout << "File Doesn't Exist '" << endl;
     }
-    else
-    {
+    else{
         cout << "File Exist" << endl;
     }
-
     Load();
     return 0;
 }
 
-void init()
-{
-    for (int i = 0; i < 100; i++)
-    {
-        for (int j = 0; j < 4; j++)
-        {
+void init(){
+    for (int i = 0; i < 100; i++){
+        for (int j = 0; j < 4; j++){
             Memory[i][j] = ' ';
         }
     }
@@ -52,39 +43,27 @@ void init()
     Toggle = false;
 }
 
-void mos()
-{
-    if (SI == 1)
-    {
+void mos(){
+    if (SI == 1){
         string line;
         getline(inFile, line);
-        
         int add = IR[2] - 48;
         add = (add * 10) + (IR[3] - 48); 
         int l=0;
-        for (int i = 0; i < line.length() && line.length() < 40; i++)
-        {
+        for (int i = 0; i < line.length() && line.length() < 40; i++){
             Memory[add][l++] = line[i];
-            if(l==4)
-            {
+            if(l==4){
                 l=0;
                 add+=1;
             }
         }
     }
-
-    else if (SI == 2)
-    {
-
+    else if (SI == 2){
         int add = IR[2] - 48;
         add = (add * 10);
-
         string out;
-
-        for (int i = 0; i < 10; i++)
-        {
-            for (int j = 0; j < 4; j++)
-            {
+        for (int i = 0; i < 10; i++){
+            for (int j = 0; j < 4; j++){
                 out += Memory[add][j];
             }
             add+=1;
@@ -93,24 +72,19 @@ void mos()
         outFile << out <<"\n";
     }
 
-    else if (SI == 3)
-    {
+    else if (SI == 3){
         outFile<<"\n\n";
     }
 }
 
-void ExecuteUserProgram()
-{
-    while (true)
-    {
-        for (int i = 0; i < 4; i++)
-        {
+void ExecuteUserProgram(){
+    while (true){
+        for (int i = 0; i < 4; i++){
             IR[i] = Memory[IC][i];
         }
         IC++;
 
-        if (IR[0] == 'L' && IR[1] == 'R')
-        {
+        if (IR[0] == 'L' && IR[1] == 'R'){
             int add = IR[2] - 48;
             add = (add * 10) + (IR[3] - 48);
 
@@ -118,8 +92,7 @@ void ExecuteUserProgram()
                 R[i] = Memory[add][i];
         }
 
-        else if (IR[0] == 'S' && IR[1] == 'R')
-        {
+        else if (IR[0] == 'S' && IR[1] == 'R'){
             int add = IR[2] - 48;
             add = (add * 10) + (IR[3] - 48);
 
@@ -127,14 +100,12 @@ void ExecuteUserProgram()
                 Memory[add][i] = R[i];
         }
 
-        else if (IR[0] == 'C' && IR[1] == 'R')
-        {
+        else if (IR[0] == 'C' && IR[1] == 'R'){
             int flag = 0;
             int add = IR[2] - 48;
             add = (add * 10) + (IR[3] - 48);
 
-            for (int i = 0; i < 4; i++)
-            {
+            for (int i = 0; i < 4; i++){
                 if (R[i] != Memory[add][i])
                     flag = 1;
             }
@@ -145,29 +116,24 @@ void ExecuteUserProgram()
                 Toggle = true;
         }
 
-        else if (IR[0] == 'B' && IR[1] == 'T')
-        {
+        else if (IR[0] == 'B' && IR[1] == 'T'){
             int add = IR[2] - 48;
             add = (add * 10) + (IR[3] - 48);
-
             if (Toggle == true)
                 IC = add;
         }
 
-        else if (IR[0] == 'G' && IR[1] == 'D')
-        {
+        else if (IR[0] == 'G' && IR[1] == 'D'){
             SI = 1;
             mos();
         }
 
-        else if (IR[0] == 'P' && IR[1] == 'D')
-        {
+        else if (IR[0] == 'P' && IR[1] == 'D'){
             SI = 2;
             mos();
         }
 
-        else if (IR[0] == 'H')
-        {
+        else if (IR[0] == 'H'){
             SI = 3;
             mos();
             cout << "Halt" << endl;
@@ -176,67 +142,44 @@ void ExecuteUserProgram()
     }
 }
 
-void Load()
-{
+void Load(){
     int block = 0;
     string line;
-    while (getline(inFile, line))
-    {
+    while (getline(inFile, line)){
         string str = "";
-        for (int i = 0; i < 4; i++)
-        {
+        for (int i = 0; i < 4; i++){
             str += line[i];
         }
-
-
-        if (str == "$AMJ")
-        {
+        if (str == "$AMJ"){
             block=0;
             init();
         }
-
-        else if (str == "$DTA")
-        {
+        else if (str == "$DTA"){
             ExecuteUserProgram();
         }
-
-        else if (str == "$END")
-        {
-            for(int i = 0; i<100; i++)
-            {
+        else if (str == "$END"){
+            for(int i = 0; i<100; i++){
                 cout<<"M["<<i<<"]\n";
-                for(int j = 0; j<4; j++ )
-                {
+                for(int j = 0; j<4; j++ ){
                     cout<<Memory[i][j]<<endl;
                 }
-                
             }
             cout<<"\n\n";
         }
-
-        else
-        {
-            if (block >= 100)
-            {
+        else{
+            if (block >= 100){
                 cout << "Memory Exceeded";
                 break;
             }
-
-            else
-            {
+            else{
                 int k = 0;
-                for (int i = block; i < block+10 && k < line.length(); i++)
-                {
-                    for (int j = 0; j < 4 && k < line.length(); j++)
-                    {
-                        if(line[k]=='H')
-                        {
+                for (int i = block; i < block+10 && k < line.length(); i++){
+                    for (int j = 0; j < 4 && k < line.length(); j++){
+                        if(line[k]=='H'){
                             Memory[i][j] = line[k++];
                             break;
                         }
-
-                        else
-                        {
+                        else{
                             Memory[i][j] = line[k++];
                         }
                     }

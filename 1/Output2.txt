@@ -1,0 +1,18 @@
+Hello World!                           
+
+Program Terminated abnormally
+Time Limit Exceeded
+
+
+IC = 3	Toggle: 0	TLC: 1	TTC: 4	TTL: 3	TLL: 1	H	 	 Hello World!                           
+
+Program Terminated abnormally
+Time Limit Exceeded
+
+
+IC = 3	Toggle: 0	TLC: 1	TTC: 4	TTL: 3	TLL: 1	H	 	 
+Program Terminated abnormally
+Time Limit Exceeded
+
+
+IC = 1	Toggle: 0	TLC: 0	TTC: 2	TTL: 1	TLL: 2000	G	D	2
