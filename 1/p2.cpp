@@ -27,8 +27,7 @@ int EM;
 fstream inFile;
 fstream outFile;
 
-unordered_map<int, string> errors = {{0, "No Error"},{1, "Out of Data"},{2, "Line Limit Exceeded"},{3, "Time Limit Exceeded"},
-                                     {4, "Operation Code Error"},{5, "Operand Error"},{6, "Invalid Page Fault"}};
+unordered_map<int, string> errors = {{0, "No Error"},{1, "Out of Data"},{2, "Line Limit Exceeded"},{3, "Time Limit Exceeded"},{4, "Operation Code Error"},{5, "Operand Error"},{6, "Invalid Page Fault"}};
 
 void init(){
     for (int i = 0; i < 300; i++){                  //clearing memory
@@ -159,7 +158,7 @@ void EXECUTE(){
 
         if(M[RA][0]!='H' && (!isdigit(M[RA][2]) || !isdigit(M[RA][3]))){
             EM = 5;
-            TERMINATE(EM);
+            TERMINATE(5);
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
@@ -180,7 +179,7 @@ void EXECUTE(){
         if(P.TTC > P.TTL){
             EM = 3;
             TI = 2;
-            TERMINATE(EM);
+            TERMINATE(3);
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i];
@@ -255,7 +254,7 @@ void EXECUTE(){
             break;
         }else{
             EM = 4;
-            TERMINATE(EM);
+            TERMINATE(4);
             outFile<<"IC = "<<IC<<"\tToggle: "<<C<<"\tTLC: "<<P.TLC<<"\tTTC: "<<P.TTC<<"\tTTL: "<<P.TTL<<"\tTLL: "<<P.TLL;
             for(int i=0;i<3;i++){
                 outFile<<"\t"<<IR[i]<<"\n\n\n";
