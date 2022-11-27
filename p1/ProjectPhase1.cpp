@@ -22,7 +22,7 @@ void init(){
 }
 
 void mos(){
-    if (SI == 1){
+    if (SI == 1){                       //gd
         string line;
         getline(inFile, line);
         int add = IR[2] - 48;
@@ -36,7 +36,7 @@ void mos(){
             }
         }
     }
-    else if (SI == 2){
+    else if (SI == 2){                              //pd
         int add = IR[2] - 48;
         add = (add * 10);
         string out;
@@ -50,8 +50,8 @@ void mos(){
         outFile << out <<"\n";
     }
 
-    else if (SI == 3){
-        outFile<<"\n\n";
+    else if (SI == 3){                              //halt
+        outFile<<"\n";
     }
 }
 
@@ -128,7 +128,7 @@ void Load(){
         for (int i = 0; i < 4; i++){
             str += line[i];
         }
-        if (str == "DIYA"){
+        if (str == "$AMJ"){
             block=0;
             init();
         }

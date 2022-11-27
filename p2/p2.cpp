@@ -220,7 +220,7 @@ void EXECUTE(){
                 for (int i = 0; i < 4; i++)
                     M[frame][i] = R[i];
             }
-        }else if (IR[0] == 'C' && IR[1] == 'R'){                    //cr
+        }else if (IR[0] == 'C' && IR[1] == 'R'){                    //cr compare register with memory location
             int flag = 0;
             int ra = ADDRESSMAP(add);
             if(ra = -1){
