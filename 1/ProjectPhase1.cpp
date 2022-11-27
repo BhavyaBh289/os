@@ -26,7 +26,7 @@ void mos(){
         string line;
         getline(inFile, line);
         int add = IR[2] - 48;
-        add = (add * 10) + (IR[3] - 48); 
+        add = (add * 10) + (IR[3] - 48);
         int l=0;
         for (int i = 0; i < line.length() && line.length() < 40; i++){
             Memory[add][l++] = line[i];
@@ -128,7 +128,7 @@ void Load(){
         for (int i = 0; i < 4; i++){
             str += line[i];
         }
-        if (str == "$AMJ"){
+        if (str == "DIYA"){
             block=0;
             init();
         }
@@ -137,10 +137,10 @@ void Load(){
         }
         else if (str == "$END"){
             for(int i = 0; i<100; i++){
-                cout<<"M["<<i<<"]\n";
+                cout<<"M["<<i<<"]";
                 for(int j = 0; j<4; j++ ){
-                    cout<<Memory[i][j]<<endl;
-                }
+                    cout<<Memory[i][j];
+                }cout<<"\n";
             }
             cout<<"\n\n";
         }
