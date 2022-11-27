@@ -1,16 +1,18 @@
-Hello World!                           
 
 Program Terminated abnormally
-Time Limit Exceeded
+Operation Code Error
 
 
-IC = 3	Toggle: 0	TLC: 1	TTC: 4	TTL: 3	TLL: 1	H	 	 Hello World!                           
-
-Program Terminated abnormally
-Time Limit Exceeded
+IC = 1	Toggle: 0	TLC: 0	TTC: 1	TTL: 3	TLL: 1	P
 
 
-IC = 3	Toggle: 0	TLC: 1	TTC: 4	TTL: 3	TLL: 1	H	 	 
+	S
+
+
+	4
+
+
+
 Program Terminated abnormally
 Time Limit Exceeded
 

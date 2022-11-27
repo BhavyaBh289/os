@@ -3,10 +3,10 @@ using namespace std;
 
 struct PCB{
     int job_id;
-    int TTL;
-    int TLL;
-    int TTC ;
-    int TLC ;
+    int TTL;                //total time limit
+    int TLL;                //total line limit
+    int TTC ;               //total time counter
+    int TLC ;               //total line counter
 };
 
 struct PCB P;
