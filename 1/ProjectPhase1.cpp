@@ -136,10 +136,14 @@ void Load(){
             ExecuteUserProgram();
         }
         else if (str == "$END"){
-            for(int i = 0; i<100; i++){
-                cout<<"M["<<i<<"]";
+            for(int i = 0; i<50; i++){
+                cout<<"M["<<i<<"]\t";
                 for(int j = 0; j<4; j++ ){
                     cout<<Memory[i][j];
+                }
+                cout<<"\tM["<<i<<"]\t";
+                for(int j = 0; j<4; j++ ){
+                    cout<<Memory[i+50][j];
                 }cout<<"\n";
             }
             cout<<"\n\n";
