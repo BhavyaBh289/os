@@ -15,9 +15,9 @@ void init(){
             Memory[i][j] = ' ';
         }
     }
-    IR[4] = {'-'};
-    R[4] = {'-'};
-    IC = 0;
+    IR[4] = {'-'};  //instruction reg
+    R[4] = {'-'};   // reg
+    IC = 0;         //instruction counter
     Toggle = false;
 }
 
